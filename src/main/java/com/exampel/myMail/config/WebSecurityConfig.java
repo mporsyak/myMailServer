@@ -43,28 +43,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable();
+
+        // All requests send to the Web Server request must be authenticated
         http
-                .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/**/*.js", "/**/*.css", "/greeting", "/register", "/addUser", "/login").permitAll()
-//                .antMatchers("/all/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .usernameParameter("login")
-                .passwordParameter("password")
-                .permitAll()
-                .defaultSuccessUrl("/all", true)
-                .and().exceptionHandling().accessDeniedPage("/access_denied")
+                .antMatchers("/register", "/addUser", "/login").permitAll()
+                .anyRequest()
+                .authenticated();
 
-
-                .and()
-
-                .logout()
-                .logoutUrl("/logout")
-                .permitAll();
-
+        // Use AuthenticationEntryPoint to authenticate user/password
         http.httpBasic().authenticationEntryPoint(entryPoint);
     }
 
