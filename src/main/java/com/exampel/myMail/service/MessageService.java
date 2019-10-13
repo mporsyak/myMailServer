@@ -28,41 +28,20 @@ public class MessageService {
         restTemplate = templateBuilder.build();
     }
 
-    public void addMessage(Message message){
-        messageRepository.save(message);}
-
-    public Message getMessage(String content){return messageRepository.findByContent(content);}
-
-    private HttpEntity<String> getEntity(User user){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        String auth = user.getLogin() + ":" + user.getPassword();
-        byte[] encodedAuth = Base64.encodeBase64(auth.getBytes(Charset.forName("US-ASCII")));
-        String authHeader = "Basic " + new String(encodedAuth);
-        headers.set("Authorization", authHeader);
-        HttpEntity<String> entity = new HttpEntity<String>(headers);
-
-        return entity;
-    }
-
-    public String getAllIncomeMessagesWithTemplate(User user){
-        ResponseEntity<String> response = restTemplate.exchange("http://localhost:8080/server/showIncomeMessages/" + user.getLogin(), HttpMethod.GET, getEntity(user), String.class);
-        return response.getBody();
-    }
-
-    public String getAllOutcomeMessagesWithTemplate(User user){
-        ResponseEntity<String> response = restTemplate.exchange("http://localhost:8080/server/showOutcomeMessages/" + user.getLogin(), HttpMethod.GET, getEntity(user), String.class);
-        return response.getBody();
-    }
-
     public List<MessageDto> getAllIncomeMessages(String authUserLogin){
         return getAllDirectMessages(false, authUserLogin);
     }
 
     public List<MessageDto> getAllOutcomeMessages(String authUserLogin){
         return getAllDirectMessages(true, authUserLogin);
+    }
+
+    public void serverAddMessage(Message message){
+        messageRepository.save(message);
+    }
+
+    public List<Message> serverGetAllMessageByUser(User userSender, User userRecip){
+        return messageRepository.findByUserSenderAndUserRecip(userSender, userRecip);
     }
 
     private List<MessageDto> getAllDirectMessages(boolean isOutcomeDirect, String authUserLogin){
@@ -82,6 +61,16 @@ public class MessageService {
 
         return messages;
     }
+
+
+
+
+
+    public void addMessage(Message message){
+        messageRepository.save(message);}
+
+    public Message getMessage(String content){return messageRepository.findByContent(content);}
+
 
     public List<Message> getAllMessage(){
         return (List<Message>) messageRepository.findAll();
