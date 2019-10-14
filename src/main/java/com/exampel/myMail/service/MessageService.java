@@ -62,22 +62,7 @@ public class MessageService {
         return messages;
     }
 
-
-
-
-
-    public void addMessage(Message message){
-        messageRepository.save(message);}
-
-    public Message getMessage(String content){return messageRepository.findByContent(content);}
-
-
     public List<Message> getAllMessage(){
         return (List<Message>) messageRepository.findAll();
     }
-
-    public List<Message> getAllMessageByUser(User userSender, User userRecip){
-        return messageRepository.findByUserSenderAndUserRecip(userSender, userRecip);
-    }
-
 }

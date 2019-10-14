@@ -7,16 +7,31 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
     @Autowired
     UserRepository userRepository;
 
-    public void addUser(User user) {userRepository.save(user);}
+    public User serverFindByLogin(String login){
+        return userRepository.findByLogin(login);
+    }
 
-    public List<User> getAllUser() {return (List<User>) userRepository.findAll();}
+    public void serverAddUser(User user) {
+        userRepository.save(user);
+    }
 
-    public User findByLogin(String login){return userRepository.findByLogin(login);}
+    public List<String> serverGetAllUser(String authUser) {
+        List<User> users = (List<User>) userRepository.findAll();
+        users.removeIf(e -> e.getLogin().equals(authUser));
+
+        List<String> allLogins = users.stream().map(e -> e.getLogin()).collect(Collectors.toList());
+        return allLogins;
+    }
+
+    public User findByLogin(String login){
+        return userRepository.findByLogin(login);
+    }
 
 }
