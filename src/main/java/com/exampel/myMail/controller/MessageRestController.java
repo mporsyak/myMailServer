@@ -18,26 +18,26 @@ import java.util.Date;
 import java.util.List;
 
 @RestController
-public class ServerMessageRestController {
+public class MessageRestController {
     @Autowired
    private MessageService messageService;
 
     @Autowired
     private UserService userService;
 
-    @GetMapping(value = "server/showIncomeMessages/{user}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<MessageDto> showIncomeMessages(@PathVariable String user){
-        return messageService.getAllIncomeMessages(user);
+    @GetMapping(value = "server/showIncomeMessages", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<MessageDto> showIncomeMessages(Principal principal){
+        return messageService.getAllIncomeMessages(principal.getName());
     }
 
-    @GetMapping(value = "server/showOutcomeMessages/{user}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<MessageDto> showOutcomeMessages(@PathVariable String user){
-        return messageService.getAllOutcomeMessages(user);
+    @GetMapping(value = "server/showOutcomeMessages", produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<MessageDto> showOutcomeMessages(Principal principal){
+        return messageService.getAllOutcomeMessages(principal.getName());
     }
 
     @PostMapping(value = "server/sendMessage", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> serverSendMessage(@RequestBody NewMessageDto newMessage) {
-        User userSender = userService.findByLogin(newMessage.getUserSender());
+    public ResponseEntity<?> serverSendMessage(@RequestBody NewMessageDto newMessage, Principal principal) {
+        User userSender = userService.findByLogin(principal.getName());
         User userRecipient = userService.findByLogin(newMessage.getUserRecip());
 
         if(userRecipient != null){
