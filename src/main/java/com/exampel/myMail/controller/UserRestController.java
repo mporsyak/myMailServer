@@ -38,4 +38,9 @@ public class UserRestController {
     public List<String> serverAllUsers(Principal principal) {
         return userService.serverGetAllUser(principal.getName());
     }
+
+    @GetMapping (path = "/")
+    public String home() {
+        return "To use this API you should authorize";
+    }
 }

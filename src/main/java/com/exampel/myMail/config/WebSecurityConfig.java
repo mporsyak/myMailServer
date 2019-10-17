@@ -48,7 +48,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         // All requests send to the Web Server request must be authenticated
         http
                 .authorizeRequests()
-                .antMatchers("/register", "/**/addUser", "/login").permitAll()
+                .antMatchers("/", "/register", "/**/addUser", "/login").permitAll()
                 .anyRequest()
                 .authenticated();
 
